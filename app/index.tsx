@@ -83,7 +83,7 @@ const LoginPage = () => {
                 </RNText>
               </RNView>
               <RNView>
-                <Link href="/register" asChild>
+                <Link href="/goals" asChild>
                   <RNButton
                     text50R
                     white

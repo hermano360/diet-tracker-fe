@@ -1,10 +1,12 @@
+import { usePathname, Link } from "expo-router";
 import { PropsWithChildren } from "react";
-import { Button, View } from "react-native-ui-lib";
+import { Button, View, Text } from "react-native-ui-lib";
 
 type Step = {
   label: string;
-  onPress: () => void;
+  route: string;
   active?: boolean;
+  disabled?: boolean;
 };
 
 interface StepWrapperProps extends PropsWithChildren {
@@ -12,6 +14,8 @@ interface StepWrapperProps extends PropsWithChildren {
 }
 
 export const StepWrapper = ({ steps = [], children }: StepWrapperProps) => {
+  const pathname = usePathname();
+
   return (
     <View
       padding-40
@@ -27,15 +31,25 @@ export const StepWrapper = ({ steps = [], children }: StepWrapperProps) => {
               ? { borderTopLeftRadius: 0, borderBottomLeftRadius: 0 }
               : { borderRadius: 0 };
 
+          const isActive = pathname === item.route;
+
           return (
-            <Button
-              label={item.label}
-              size={Button.sizes.medium}
-              style={{
-                ...borderStyle,
-                backgroundColor: item.active ? "red" : "pink",
-              }}
-            />
+            <Link
+              href={item.route}
+              asChild
+              disabled={item.disabled}
+              key={`${item.label}-${index}`}
+            >
+              <Button
+                label={item.label}
+                size={Button.sizes.medium}
+                style={{
+                  ...borderStyle,
+                  backgroundColor: isActive ? "red" : "pink",
+                }}
+                key={`${item.label}-${index}`}
+              />
+            </Link>
           );
         })}
       </View>
