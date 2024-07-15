@@ -1,24 +1,24 @@
 import OnboardingTabs from "@/components/OnboardingTabs";
-import { Link } from "expo-router";
+import { router } from "expo-router";
 import { View, Text, Button, Card } from "react-native-ui-lib";
 import { ScrollView } from "react-native";
-import { useState, useContext, useEffect } from "react";
-import { ThemeContext } from "@/state";
+import { useState } from "react";
+
+import { useUserStateDispatch } from "@/state/StateContext";
 
 const imageSource = require("../assets/images/plate-food.jpg");
 
 const GoalPage = () => {
-  const { goal, setGoal } = useContext(ThemeContext);
+  const dispatch = useUserStateDispatch();
 
   const [selectedGoal, setSelectedGoal] = useState<string | null>(null);
 
-  useEffect(() => {
-    setSelectedGoal(null);
-  }, []);
+  const onSubmit = () => {
+    if (!selectedGoal || !dispatch) return;
 
-  useEffect(() => {
-    setGoal(selectedGoal);
-  }, [selectedGoal]);
+    dispatch({ type: "goal", goal: selectedGoal });
+    router.push("/demographics");
+  };
 
   return (
     <OnboardingTabs>
@@ -30,6 +30,7 @@ const GoalPage = () => {
         <ScrollView
           horizontal
           style={{ paddingTop: 10, maxHeight: 350, marginBottom: 20 }}
+          showsHorizontalScrollIndicator={false}
         >
           <Card
             selected={selectedGoal === "WEIGHT_LOSS"}
@@ -120,17 +121,16 @@ const GoalPage = () => {
           </Card>
         </ScrollView>
         <View>
-          <Link href={"/demographics"} asChild>
-            <Button
-              text50R
-              white
-              backgroundColor="red"
-              disabledBackgroundColor="pink"
-              label="Continue"
-              marginT-20
-              disabled={!goal}
-            />
-          </Link>
+          <Button
+            text50R
+            white
+            backgroundColor="red"
+            disabledBackgroundColor="pink"
+            label="Continue"
+            marginT-20
+            disabled={!selectedGoal}
+            onPress={onSubmit}
+          />
         </View>
       </View>
     </OnboardingTabs>

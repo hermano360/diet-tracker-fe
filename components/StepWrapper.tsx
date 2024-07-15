@@ -18,9 +18,13 @@ export const StepWrapper = ({ steps = [], children }: StepWrapperProps) => {
 
   return (
     <View
-      padding-40
+      paddingV-60
       flex
-      style={{ justifyContent: "flex-start", alignItems: "center" }}
+      style={{
+        justifyContent: "flex-start",
+        alignItems: "center",
+        width: "100%",
+      }}
     >
       <View marginB-40 row>
         {steps.map((item, index) => {
@@ -54,7 +58,7 @@ export const StepWrapper = ({ steps = [], children }: StepWrapperProps) => {
         })}
       </View>
 
-      <View>{children}</View>
+      <View style={{ width: "100%" }}>{children}</View>
     </View>
   );
 };

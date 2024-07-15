@@ -1,4 +1,4 @@
-import { View, Text, Pressable } from "react-native";
+import { View } from "react-native-ui-lib";
 import { Link, usePathname } from "expo-router";
 
 import { StepWrapper } from "@/components/StepWrapper";
@@ -9,7 +9,7 @@ interface OnboardingTabsProps extends PropsWithChildren {}
 const ROUTES = [
   { label: "Step 1", route: "/goals" },
   { label: "Step 2", route: "/demographics" },
-  { label: "Step 3", route: "/weight" },
+  { label: "Step 3", route: "/macros" },
 ];
 
 const OnboardingTabs = ({ children }: OnboardingTabsProps) => {
@@ -19,7 +19,15 @@ const OnboardingTabs = ({ children }: OnboardingTabsProps) => {
   const disabled = ROUTES.map((_, index) => index > routeIndex);
 
   return (
-    <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+    <View
+      centerH
+      centerV
+      paddingH-40
+      style={{
+        flex: 1,
+        width: "100%",
+      }}
+    >
       <StepWrapper
         steps={[
           {
