@@ -53,16 +53,16 @@ function userStateReducer(userState: UserStateProps, action) {
         age: action.age,
       };
     }
-    case "currentWeight": {
+    case "weight": {
       return {
         ...userState,
-        currentWeight: action.currentWeight,
+        weight: action.weight,
       };
     }
-    case "goalWeight": {
+    case "activityLevel": {
       return {
         ...userState,
-        goalWeight: action.goalWeight,
+        goalWeight: action.activityLevel,
       };
     }
     case "moreInfo": {
@@ -91,13 +91,13 @@ type UserStateProps = {
   goal?: "WEIGHT_LOSS" | "MUSCLE_GAIN" | "BOTH";
   gender?: "MALE" | "FEMALE" | "OTHER";
   age?: number;
-  currentWeight?: number;
-  goalWeight?: number;
+  weight?: number;
   moreInfo?: string;
   calories?: number;
   fat?: number;
   carbs?: number;
   protien?: number;
+  activityLevel?: number;
 };
 const initialUserState: UserStateProps = { step: 0 };
 

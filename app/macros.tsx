@@ -63,7 +63,7 @@ const WeightPage = () => {
           </View>
 
           <View marginT-50>
-            <Link href={"/goals"} asChild>
+            <Link href={"/"} asChild>
               <Button
                 text50R
                 white

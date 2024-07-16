@@ -1,5 +1,5 @@
 import OnboardingTabs from "@/components/OnboardingTabs";
-import { Link } from "expo-router";
+import { Link, router } from "expo-router";
 import {
   View,
   Text,
@@ -8,15 +8,86 @@ import {
   SectionsWheelPicker,
 } from "react-native-ui-lib";
 import { FlatList } from "react-native";
-import { useState } from "react";
+import { useMemo, useState } from "react";
+import { useUserStateDispatch } from "@/state/StateContext";
 
 const DemographicsPage = () => {
   const [gender, setGender] = useState("");
   const [age, setAge] = useState<number | undefined>();
-  const [currentWeight, setCurrentWeight] = useState<number | undefined>();
-  const [goalWeight, setGoalWeight] = useState<number | undefined>();
+  const [weight, setWeight] = useState<number | undefined>();
+  const [inchesHeight, setInchesHeight] = useState<number>(0);
+  const [feetHeight, setFeetHeight] = useState<number | undefined>();
+  const [activityLevel, setActivityLevel] = useState<number | undefined>();
+  const [moreInfo, setMoreInfo] = useState<string | undefined>();
+
+  const [isLoading, setIsLoading] = useState<boolean>(false);
 
   const isDisabled = !gender;
+
+  const dispatch = useUserStateDispatch();
+
+  const height =
+    feetHeight === undefined
+      ? undefined
+      : (feetHeight || 0) * 12 + inchesHeight;
+
+  const onSubmit = async () => {
+    if (!dispatch) return;
+
+    if (!weight || !height || !age || !activityLevel) {
+      return;
+    }
+    setIsLoading(true);
+
+    dispatch({ type: "gender", gender });
+    dispatch({ type: "age", age });
+    dispatch({ type: "weight", weight });
+    dispatch({ type: "height", height });
+    dispatch({ type: "activityLevel", activityLevel });
+    dispatch({ type: "moreInfo", moreInfo });
+
+    const targetCalories = generateTargetCalories(
+      weight,
+      height,
+      age,
+      activityLevel
+    );
+
+    const { fat, protein, carbs } =
+      generateTargetMacronutrients(targetCalories);
+
+    dispatch({
+      type: "setMacros",
+      calories: targetCalories,
+      fat,
+      protein,
+      carbs,
+    });
+
+    setIsLoading(false);
+
+    router.push("/macros");
+  };
+
+  const weightItems = useMemo(() => {
+    return Array(201)
+      .fill(null)
+      .map((_, i) => {
+        const value = 300 - i;
+
+        return { label: value.toString(), value };
+      });
+  }, []);
+
+  const ageItems = useMemo(() => {
+    return Array(100)
+      .fill(null)
+      .map((_, i) => {
+        const value = i + 1;
+
+        return { label: value.toString(), value };
+      });
+  }, []);
 
   return (
     <OnboardingTabs>
@@ -37,6 +108,7 @@ const DemographicsPage = () => {
         }
         ListFooterComponent={
           <View
+            marginB-40
             style={{
               alignContent: "center",
               width: "100%",
@@ -97,22 +169,61 @@ const DemographicsPage = () => {
                     sections={[
                       {
                         onChange: setAge,
-                        initialValue: undefined,
-                        items: Array(100)
-                          .fill(null)
-                          .map((_, i) => {
-                            const value = i + 1;
-
-                            return { label: value.toString(), value };
-                          }),
+                        initialValue: 18,
+                        items: ageItems,
                       },
                     ]}
                   />
                 </View>
               </>
             )}
-
             {age !== undefined && (
+              <>
+                <View marginB-10 style={{ alignItems: "center" }}>
+                  <Text text50BO>How tall are you?</Text>
+                </View>
+
+                <View
+                  marginB-20
+                  padding-10
+                  style={{
+                    borderWidth: 1,
+                    borderColor: "black",
+                    borderRadius: 16,
+                  }}
+                >
+                  <SectionsWheelPicker
+                    sections={[
+                      {
+                        onChange: setFeetHeight,
+                        initialValue: 5,
+                        items: Array(6)
+                          .fill(null)
+                          .map((_, i) => {
+                            const value = i + 1;
+
+                            return { label: `${value}`, value };
+                          }),
+                        label: "ft",
+                      },
+                      {
+                        onChange: setInchesHeight,
+                        initialValue: 0,
+                        items: Array(12)
+                          .fill(null)
+                          .map((_, i) => {
+                            const value = i;
+
+                            return { label: `${value}`, value };
+                          }),
+                        label: "in",
+                      },
+                    ]}
+                  />
+                </View>
+              </>
+            )}
+            {height !== undefined && (
               <>
                 <View marginB-10 style={{ alignItems: "center" }}>
                   <Text text50BO>How much do you currently weigh?</Text>
@@ -129,15 +240,9 @@ const DemographicsPage = () => {
                   <SectionsWheelPicker
                     sections={[
                       {
-                        onChange: setCurrentWeight,
-                        initialValue: undefined,
-                        items: Array(201)
-                          .fill(null)
-                          .map((_, i) => {
-                            const value = i + 100;
-
-                            return { label: value.toString(), value };
-                          }),
+                        onChange: setWeight,
+                        initialValue: 150,
+                        items: weightItems,
                       },
                     ]}
                   />
@@ -145,39 +250,65 @@ const DemographicsPage = () => {
               </>
             )}
 
-            {currentWeight !== undefined && (
+            {weight !== undefined && (
               <>
-                <View marginB-20 centerH>
-                  <Text text50BO>What is your goal weight?</Text>
+                <View marginB-10 centerH>
+                  <Text text50BO>How active are you?</Text>
                 </View>
-                <View
-                  marginB-20
-                  padding-10
-                  style={{
-                    borderWidth: 1,
-                    borderColor: "black",
-                    borderRadius: 16,
-                  }}
-                >
-                  <SectionsWheelPicker
-                    sections={[
-                      {
-                        onChange: setGoalWeight,
-                        initialValue: undefined,
-                        items: Array(201)
-                          .fill(null)
-                          .map((_, i) => {
-                            const value = i + 100;
-
-                            return { label: value.toString(), value };
-                          }),
-                      },
-                    ]}
-                  />
+                <View marginB-30>
+                  <Button
+                    text60R
+                    white
+                    backgroundColor={activityLevel === 1.2 ? "red" : "pink"}
+                    marginT-20
+                    marginR-10
+                    onPress={() => setActivityLevel(1.2)}
+                  >
+                    <Text white text60R center>
+                      Little to no exercise
+                    </Text>
+                  </Button>
+                  <Button
+                    text60R
+                    white
+                    backgroundColor={activityLevel === 1.375 ? "red" : "pink"}
+                    marginT-20
+                    marginR-10
+                    onPress={() => setActivityLevel(1.375)}
+                  >
+                    <Text white text60R center>
+                      Light exercise a few times a week
+                    </Text>
+                  </Button>
+                  <Button
+                    text60R
+                    white
+                    backgroundColor={activityLevel === 1.55 ? "red" : "pink"}
+                    marginT-20
+                    marginR-10
+                    onPress={() => setActivityLevel(1.55)}
+                  >
+                    <Text white text60R center>
+                      Moderate exercise 3-5 times a week
+                    </Text>
+                  </Button>
+                  <Button
+                    text60R
+                    white
+                    backgroundColor={activityLevel === 1.725 ? "red" : "pink"}
+                    marginT-20
+                    marginR-10
+                    onPress={() => setActivityLevel(1.725)}
+                  >
+                    <Text white text60R center>
+                      Heavy exercise 6-7 times a week
+                    </Text>
+                  </Button>
                 </View>
               </>
             )}
-            {goalWeight !== undefined && (
+            {/* Maybe add activity level  */}
+            {activityLevel !== undefined && (
               <>
                 <View marginB-10 centerH>
                   <Text text50BO>
@@ -194,24 +325,25 @@ const DemographicsPage = () => {
                   }}
                 >
                   <TextField
-                    placeholder={"Anything you'd like to share"}
+                    placeholder="Anything you'd like to share"
                     enableErrors
                     showCharCounter
                     text60R
+                    value={moreInfo}
+                    onChangeText={setMoreInfo}
                   />
                 </View>
                 <View marginB-80>
-                  <Link href={"/macros"} asChild>
-                    <Button
-                      text50R
-                      white
-                      backgroundColor="red"
-                      disabledBackgroundColor="pink"
-                      label="Continue"
-                      marginT-20
-                      disabled={isDisabled}
-                    />
-                  </Link>
+                  <Button
+                    text50R
+                    white
+                    backgroundColor="red"
+                    disabledBackgroundColor="pink"
+                    label="Continue"
+                    marginT-20
+                    disabled={isDisabled}
+                    onPress={onSubmit}
+                  />
                 </View>
               </>
             )}
