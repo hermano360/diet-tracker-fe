@@ -1,5 +1,5 @@
 import OnboardingTabs from "@/components/OnboardingTabs";
-import { Link, router } from "expo-router";
+import { router } from "expo-router";
 import {
   View,
   Text,
@@ -14,14 +14,20 @@ import {
   generateTargetCalories,
   generateTargetMacronutrients,
 } from "@/utils/determineMacros";
+import GenderQuestion from "@/components/demographics/GenderQuestion";
+import { ACTIVITY_LEVEL_SCORE, GENDER } from "@/state/types";
+import AgeQuestion from "@/components/demographics/AgeQuestion";
+import ActivityLevelQuestion from "@/components/demographics/ActivityLevelQuestion";
 
 const DemographicsPage = () => {
-  const [gender, setGender] = useState("");
+  const [gender, setGender] = useState<GENDER | undefined>();
   const [age, setAge] = useState<number | undefined>();
   const [weight, setWeight] = useState<number | undefined>();
   const [inchesHeight, setInchesHeight] = useState<number>(0);
   const [feetHeight, setFeetHeight] = useState<number | undefined>();
-  const [activityLevel, setActivityLevel] = useState<number | undefined>();
+  const [activityLevel, setActivityLevel] = useState<
+    ACTIVITY_LEVEL_SCORE | undefined
+  >();
   const [moreInfo, setMoreInfo] = useState<string | undefined>();
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
@@ -83,16 +89,6 @@ const DemographicsPage = () => {
       });
   }, []);
 
-  const ageItems = useMemo(() => {
-    return Array(100)
-      .fill(null)
-      .map((_, i) => {
-        const value = i + 1;
-
-        return { label: value.toString(), value };
-      });
-  }, []);
-
   return (
     <OnboardingTabs>
       <FlatList
@@ -121,122 +117,14 @@ const DemographicsPage = () => {
               alignItems: "center",
             }}
           >
-            <View marginB-10 center>
-              <Text text50BO>What is your gender?</Text>
-            </View>
+            <GenderQuestion gender={gender} onPress={setGender} />
+            {gender && <AgeQuestion onChange={setAge} />}
 
-            <View row marginB-30>
-              <Button
-                text60R
-                white
-                backgroundColor={gender === "MALE" ? "red" : "pink"}
-                label="Male"
-                marginT-20
-                marginR-10
-                onPress={() => setGender("MALE")}
-              />
-              <Button
-                text60R
-                white
-                backgroundColor={gender === "FEMALE" ? "red" : "pink"}
-                label="Female"
-                marginT-20
-                marginR-10
-                onPress={() => setGender("FEMALE")}
-              />
-              <Button
-                text60R
-                white
-                backgroundColor={gender === "OTHER" ? "red" : "pink"}
-                label="Other"
-                marginT-20
-                onPress={() => setGender("OTHER")}
-              />
-            </View>
-
-            {gender && (
-              <>
-                <View marginB-20 centerH>
-                  <Text text50BO>How old are you?</Text>
-                </View>
-                <View
-                  marginB-20
-                  padding-10
-                  style={{
-                    borderWidth: 1,
-                    borderColor: "black",
-                    borderRadius: 16,
-                  }}
-                >
-                  <SectionsWheelPicker
-                    numberOfVisibleRows={3}
-                    sections={[
-                      {
-                        onChange: setAge,
-                        initialValue: 18,
-                        items: ageItems,
-                      },
-                    ]}
-                  />
-                </View>
-              </>
-            )}
             {age !== undefined && (
-              <>
-                <View marginB-10 centerH>
-                  <Text text50BO>How active are you?</Text>
-                </View>
-                <View marginB-30>
-                  <Button
-                    text60R
-                    white
-                    backgroundColor={activityLevel === 1.2 ? "red" : "pink"}
-                    marginT-20
-                    marginR-10
-                    onPress={() => setActivityLevel(1.2)}
-                  >
-                    <Text white text60R center>
-                      Little to no exercise
-                    </Text>
-                  </Button>
-                  <Button
-                    text60R
-                    white
-                    backgroundColor={activityLevel === 1.375 ? "red" : "pink"}
-                    marginT-20
-                    marginR-10
-                    onPress={() => setActivityLevel(1.375)}
-                  >
-                    <Text white text60R center>
-                      Light exercise a few times a week
-                    </Text>
-                  </Button>
-                  <Button
-                    text60R
-                    white
-                    backgroundColor={activityLevel === 1.55 ? "red" : "pink"}
-                    marginT-20
-                    marginR-10
-                    onPress={() => setActivityLevel(1.55)}
-                  >
-                    <Text white text60R center>
-                      Moderate exercise 3-5 times a week
-                    </Text>
-                  </Button>
-                  <Button
-                    text60R
-                    white
-                    backgroundColor={activityLevel === 1.725 ? "red" : "pink"}
-                    marginT-20
-                    marginR-10
-                    onPress={() => setActivityLevel(1.725)}
-                  >
-                    <Text white text60R center>
-                      Heavy exercise 6-7 times a week
-                    </Text>
-                  </Button>
-                </View>
-              </>
+              <ActivityLevelQuestion
+                activityLevel={activityLevel}
+                onPress={setActivityLevel}
+              />
             )}
             {activityLevel !== undefined && (
               <>
