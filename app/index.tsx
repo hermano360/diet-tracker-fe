@@ -45,18 +45,13 @@ const LoginPage = () => {
             </View>
             <View>
               <Link href="/goals" asChild>
-                <Button
-                  text60R
-                  white
-                  background-orange30
-                  label="Start Tracking"
-                />
+                <Button text60R white background-red20 label="Start Tracking" />
               </Link>
               <Link href="/register" asChild>
                 <Button
                   text60R
-                  orange30
-                  background-white
+                  red20
+                  backgroundColor="white"
                   label="Sign Up"
                   marginT-20
                 />

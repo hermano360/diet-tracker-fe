@@ -10,6 +10,10 @@ import {
 import { FlatList } from "react-native";
 import { useMemo, useState } from "react";
 import { useUserStateDispatch } from "@/state/StateContext";
+import {
+  generateTargetCalories,
+  generateTargetMacronutrients,
+} from "@/utils/determineMacros";
 
 const DemographicsPage = () => {
   const [gender, setGender] = useState("");
@@ -59,9 +63,9 @@ const DemographicsPage = () => {
     dispatch({
       type: "setMacros",
       calories: targetCalories,
-      fat,
-      protein,
-      carbs,
+      fat: Math.floor(fat),
+      protein: Math.floor(protein),
+      carbs: Math.floor(carbs),
     });
 
     setIsLoading(false);
@@ -100,7 +104,7 @@ const DemographicsPage = () => {
           <View
             marginB-30
             style={{
-              alignItems: "center",
+              alignItems: "flex-start",
             }}
           >
             <Text text30BO>Tell us about yourself</Text>
@@ -179,79 +183,6 @@ const DemographicsPage = () => {
             )}
             {age !== undefined && (
               <>
-                <View marginB-10 style={{ alignItems: "center" }}>
-                  <Text text50BO>How tall are you?</Text>
-                </View>
-
-                <View
-                  marginB-20
-                  padding-10
-                  style={{
-                    borderWidth: 1,
-                    borderColor: "black",
-                    borderRadius: 16,
-                  }}
-                >
-                  <SectionsWheelPicker
-                    sections={[
-                      {
-                        onChange: setFeetHeight,
-                        initialValue: 5,
-                        items: Array(6)
-                          .fill(null)
-                          .map((_, i) => {
-                            const value = i + 1;
-
-                            return { label: `${value}`, value };
-                          }),
-                        label: "ft",
-                      },
-                      {
-                        onChange: setInchesHeight,
-                        initialValue: 0,
-                        items: Array(12)
-                          .fill(null)
-                          .map((_, i) => {
-                            const value = i;
-
-                            return { label: `${value}`, value };
-                          }),
-                        label: "in",
-                      },
-                    ]}
-                  />
-                </View>
-              </>
-            )}
-            {height !== undefined && (
-              <>
-                <View marginB-10 style={{ alignItems: "center" }}>
-                  <Text text50BO>How much do you currently weigh?</Text>
-                </View>
-                <View
-                  marginB-20
-                  padding-10
-                  style={{
-                    borderWidth: 1,
-                    borderColor: "black",
-                    borderRadius: 16,
-                  }}
-                >
-                  <SectionsWheelPicker
-                    sections={[
-                      {
-                        onChange: setWeight,
-                        initialValue: 150,
-                        items: weightItems,
-                      },
-                    ]}
-                  />
-                </View>
-              </>
-            )}
-
-            {weight !== undefined && (
-              <>
                 <View marginB-10 centerH>
                   <Text text50BO>How active are you?</Text>
                 </View>
@@ -307,8 +238,82 @@ const DemographicsPage = () => {
                 </View>
               </>
             )}
-            {/* Maybe add activity level  */}
             {activityLevel !== undefined && (
+              <>
+                <View marginB-10 style={{ alignItems: "center" }}>
+                  <Text text50BO>How tall are you?</Text>
+                </View>
+
+                <View
+                  marginB-20
+                  padding-10
+                  style={{
+                    borderWidth: 1,
+                    borderColor: "black",
+                    borderRadius: 16,
+                  }}
+                >
+                  <SectionsWheelPicker
+                    sections={[
+                      {
+                        onChange: setFeetHeight,
+                        initialValue: 5,
+                        items: Array(6)
+                          .fill(null)
+                          .map((_, i) => {
+                            const value = i + 1;
+
+                            return { label: `${value}`, value };
+                          }),
+                        label: "ft",
+                      },
+                      {
+                        onChange: setInchesHeight,
+                        initialValue: 0,
+                        items: Array(12)
+                          .fill(null)
+                          .map((_, i) => {
+                            const value = i;
+
+                            return { label: `${value}`, value };
+                          }),
+                        label: "in",
+                      },
+                    ]}
+                  />
+                </View>
+              </>
+            )}
+
+            {height !== undefined && (
+              <>
+                <View marginB-10 style={{ alignItems: "center" }}>
+                  <Text text50BO>How much do you currently weigh?</Text>
+                </View>
+                <View
+                  marginB-20
+                  padding-10
+                  style={{
+                    borderWidth: 1,
+                    borderColor: "black",
+                    borderRadius: 16,
+                  }}
+                >
+                  <SectionsWheelPicker
+                    sections={[
+                      {
+                        onChange: setWeight,
+                        initialValue: 150,
+                        items: weightItems,
+                        label: "lbs",
+                      },
+                    ]}
+                  />
+                </View>
+              </>
+            )}
+
+            {weight !== undefined && (
               <>
                 <View marginB-10 centerH>
                   <Text text50BO>

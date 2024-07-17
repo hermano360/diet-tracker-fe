@@ -59,6 +59,12 @@ function userStateReducer(userState: UserStateProps, action) {
         weight: action.weight,
       };
     }
+    case "height": {
+      return {
+        ...userState,
+        height: action.height,
+      };
+    }
     case "activityLevel": {
       return {
         ...userState,
@@ -92,11 +98,12 @@ type UserStateProps = {
   gender?: "MALE" | "FEMALE" | "OTHER";
   age?: number;
   weight?: number;
+  height?: number;
   moreInfo?: string;
   calories?: number;
   fat?: number;
   carbs?: number;
-  protien?: number;
+  protein?: number;
   activityLevel?: number;
 };
 const initialUserState: UserStateProps = { step: 0 };

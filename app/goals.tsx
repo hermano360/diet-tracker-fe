@@ -50,7 +50,9 @@ const GoalPage = () => {
                 height: "100%",
                 width: "100%",
                 paddingHorizontal: 20,
-                backgroundColor: "rgba(0,0,0,0.5)",
+                backgroundColor: `rgba(0,0,0,${
+                  selectedGoal === "WEIGHT_LOSS" ? "0.4" : "0.6"
+                })`,
                 borderRadius: 16,
                 alignContent: "center",
                 justifyContent: "center",
@@ -79,7 +81,9 @@ const GoalPage = () => {
                 height: "100%",
                 width: "100%",
                 paddingHorizontal: 20,
-                backgroundColor: "rgba(0,0,0,0.5)",
+                backgroundColor: `rgba(0,0,0,${
+                  selectedGoal === "MUSCLE_GAIN" ? "0.3" : "0.6"
+                })`,
                 borderRadius: 16,
                 alignContent: "center",
                 justifyContent: "center",
@@ -108,7 +112,9 @@ const GoalPage = () => {
                 height: "100%",
                 width: "100%",
                 paddingHorizontal: 20,
-                backgroundColor: "rgba(0,0,0,0.5)",
+                backgroundColor: `rgba(0,0,0,${
+                  selectedGoal === "HYBRID" ? "0.3" : "0.6"
+                })`,
                 borderRadius: 16,
                 alignContent: "center",
                 justifyContent: "center",
@@ -124,7 +130,7 @@ const GoalPage = () => {
           <Button
             text50R
             white
-            backgroundColor="red"
+            background-red20
             disabledBackgroundColor="pink"
             label="Continue"
             marginT-20

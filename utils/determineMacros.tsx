@@ -1,25 +1,25 @@
-const generateTargetCalories = (
+export const generateTargetCalories = (
   weight: number,
   height: number,
   age: number,
   activityLevel: number
 ) => {
-  const BMR = 66 + 6.23 * weight + 12.7 * height - 6.8 * age;
+  const BMR = (10 / 2.2) * weight + 6.25 * 2.54 * height - 5 * age + 5;
 
   return BMR * activityLevel;
 };
 
-const generateTargetMacronutrients = (calories: number) => {
+export const generateTargetMacronutrients = (calories: number) => {
   // calories for protein, carb, fat
-  const split = [0.4, 0.4, 0.2];
+  const split = [0.4, 0.3, 0.3];
 
   const proteinCalories = calories * split[0];
   const carbCalories = calories * split[1];
   const fatCalories = calories * split[2];
 
-  const gramsProtein = proteinCalories / 4;
-  const gramsCarbs = carbCalories / 4;
-  const gramsFat = fatCalories / 9;
+  const gramsProtein = Math.floor((0.2 * proteinCalories) / 4) * 5;
+  const gramsCarbs = Math.floor((0.2 * carbCalories) / 4) * 5;
+  const gramsFat = Math.floor((0.2 * fatCalories) / 9) * 5;
 
   return { protein: gramsProtein, fat: gramsFat, carbs: gramsCarbs };
 };

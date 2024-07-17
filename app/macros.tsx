@@ -4,13 +4,17 @@ import { Link } from "expo-router";
 import { View, Text, Button } from "react-native-ui-lib";
 import { Stepper } from "../components/Stepper";
 import { useState } from "react";
+import { useUserState } from "@/state/StateContext";
 
-const WeightPage = () => {
-  const [protein, setProtein] = useState(100);
-  const [fat, setFat] = useState(100);
-  const [carbs, setCarbs] = useState(100);
+const MacrosPage = () => {
+  const { protein = 0, fat = 0, carbs = 0 } = useUserState();
+  const [selectedProtein, setSelectedProtein] = useState(protein);
+  const [selectedFat, setSelectedFat] = useState(fat);
+  const [selectedCarbs, setSelectedCarbs] = useState(carbs);
 
-  const calories = protein * 4 + fat * 9 + carbs * 4;
+  const selectedCalories =
+    selectedProtein * 4 + selectedFat * 9 + selectedCarbs * 4;
+
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
       <OnboardingTabs>
@@ -29,7 +33,7 @@ const WeightPage = () => {
               Total Daily Calories
             </Text>
             <Text text50 $textDefault marginB-20>
-              {calories}
+              {selectedCalories}
             </Text>
           </View>
           <View spread marginT-20 centerH style={{ width: "100%" }}>
@@ -39,8 +43,8 @@ const WeightPage = () => {
 
             <Stepper
               step={5}
-              value={protein}
-              onValueChange={setProtein}
+              value={selectedProtein}
+              onValueChange={setSelectedProtein}
               minValue={0}
             />
           </View>
@@ -48,7 +52,12 @@ const WeightPage = () => {
             <Text text50R $textDefault marginB-20>
               Fat (g)
             </Text>
-            <Stepper step={5} value={fat} onValueChange={setFat} minValue={0} />
+            <Stepper
+              step={5}
+              value={selectedFat}
+              onValueChange={setSelectedFat}
+              minValue={0}
+            />
           </View>
           <View spread marginT-20 centerH style={{ width: "100%" }}>
             <Text text50R $textDefault marginB-20>
@@ -56,8 +65,8 @@ const WeightPage = () => {
             </Text>
             <Stepper
               step={5}
-              value={carbs}
-              onValueChange={setCarbs}
+              value={selectedCarbs}
+              onValueChange={setSelectedCarbs}
               minValue={0}
             />
           </View>
@@ -80,4 +89,4 @@ const WeightPage = () => {
   );
 };
 
-export default WeightPage;
+export default MacrosPage;

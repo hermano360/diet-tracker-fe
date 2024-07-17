@@ -1,5 +1,5 @@
 import { View } from "react-native-ui-lib";
-import { Link, usePathname } from "expo-router";
+import { usePathname } from "expo-router";
 
 import { StepWrapper } from "@/components/StepWrapper";
 import { PropsWithChildren } from "react";
